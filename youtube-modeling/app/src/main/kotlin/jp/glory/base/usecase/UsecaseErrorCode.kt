@@ -5,7 +5,8 @@ import jp.glory.base.domain.DomainErrorCode
 enum class UsecaseErrorCode {
     AlreadyChanelSubscribed,
     ChannelNotFound,
-    SubscriberNotFound;
+    SubscriberNotFound,
+    NotHaveUploadMovieAuthority;
 
     companion object {
         fun fromDomain(error: DomainErrorCode): UsecaseErrorCode =
@@ -13,6 +14,7 @@ enum class UsecaseErrorCode {
                 DomainErrorCode.AlreadyChanelSubscribed -> AlreadyChanelSubscribed
                 DomainErrorCode.ChannelNotFound -> ChannelNotFound
                 DomainErrorCode.SubscriberNotFound -> SubscriberNotFound
+                DomainErrorCode.NotHaveUploadMovieAuthority -> NotHaveUploadMovieAuthority
             }
     }
 }

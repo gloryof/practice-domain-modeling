@@ -1,4 +1,4 @@
-package jp.glory.channel.domain
+package jp.glory.channel.domain.model
 
 class Subscriber(
     val id: SubscriberId,

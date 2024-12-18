@@ -6,14 +6,15 @@ import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.zip
 import jp.glory.base.domain.DomainErrorCode
+import jp.glory.base.usecase.AuthorizedUserId
 import jp.glory.base.usecase.UsecaseErrorCode
-import jp.glory.channel.domain.ChanelId
-import jp.glory.channel.domain.Channel
-import jp.glory.channel.domain.ChannelEventListener
-import jp.glory.channel.domain.ChannelRepository
-import jp.glory.channel.domain.Subscriber
-import jp.glory.channel.domain.SubscriberId
-import jp.glory.channel.domain.SubscriberRepository
+import jp.glory.channel.domain.event.ChannelEventListener
+import jp.glory.channel.domain.model.ChanelId
+import jp.glory.channel.domain.model.Channel
+import jp.glory.channel.domain.model.Subscriber
+import jp.glory.channel.domain.model.SubscriberId
+import jp.glory.channel.domain.repository.ChannelRepository
+import jp.glory.channel.domain.repository.SubscriberRepository
 
 class SubscribeChannel(
     private val channelRepository: ChannelRepository,
@@ -21,12 +22,11 @@ class SubscribeChannel(
     private val channelEventListener: ChannelEventListener
 ) {
     fun subscribe(
-        channelId: String,
-        subscriberId: String
+        input: Input
     ): Result<Unit, UsecaseErrorCode> =
         zip (
-            { channelRepository.findById(ChanelId(channelId)) },
-            { subscriberRepository.findById(SubscriberId(subscriberId)) },
+            { channelRepository.findById(ChanelId(input.channelId)) },
+            { subscriberRepository.findById(SubscriberId(input.subscriberId.value)) },
             { channel, subscriber -> Target(channel, subscriber) }
         )
             .flatMap { subscribeChannel(it.channel, it.subscriber) }
@@ -38,6 +38,11 @@ class SubscribeChannel(
     ): Result<Unit, DomainErrorCode> =
         channel.subscribe(subscriber)
             .map { channelEventListener.handleSubscribed(it) }
+
+    class Input(
+        val channelId: String,
+        val subscriberId: AuthorizedUserId
+    )
 
     private class Target(
         val channel: Channel,

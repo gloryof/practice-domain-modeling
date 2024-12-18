@@ -6,18 +6,19 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import jp.glory.base.domain.DomainErrorCode
+import jp.glory.base.usecase.AuthorizedUserId
 import jp.glory.base.usecase.UsecaseErrorCode
-import jp.glory.channel.domain.ChanelId
-import jp.glory.channel.domain.ChanelTitle
-import jp.glory.channel.domain.Channel
-import jp.glory.channel.domain.ChannelEventListener
-import jp.glory.channel.domain.ChannelRepository
-import jp.glory.channel.domain.MovieCount
-import jp.glory.channel.domain.SubscribedChannel
-import jp.glory.channel.domain.Subscriber
-import jp.glory.channel.domain.SubscriberCount
-import jp.glory.channel.domain.SubscriberId
-import jp.glory.channel.domain.SubscriberRepository
+import jp.glory.channel.domain.event.ChannelEventListener
+import jp.glory.channel.domain.event.SubscribedChannel
+import jp.glory.channel.domain.model.ChanelId
+import jp.glory.channel.domain.model.ChanelTitle
+import jp.glory.channel.domain.model.Channel
+import jp.glory.channel.domain.model.MovieCount
+import jp.glory.channel.domain.model.Subscriber
+import jp.glory.channel.domain.model.SubscriberCount
+import jp.glory.channel.domain.model.SubscriberId
+import jp.glory.channel.domain.repository.ChannelRepository
+import jp.glory.channel.domain.repository.SubscriberRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -59,7 +60,11 @@ class SubscribeChannelTest {
             channelEventListener = channelEventListener
         )
 
-        sut.subscribe(channel.id.value, subscriber.id.value)
+        val input = SubscribeChannel.Input(
+            channelId = channel.id.value,
+            subscriberId = AuthorizedUserId(subscriber.id.value)
+        )
+        sut.subscribe(input)
 
         verify {
             channelEventListener.handleSubscribed(event)
@@ -94,7 +99,11 @@ class SubscribeChannelTest {
             subscriberRepository = subscriberRepository,
         )
 
-        val actual = sut.subscribe(channel.id.value, subscriber.id.value).error
+        val input = SubscribeChannel.Input(
+            channelId = channel.id.value,
+            subscriberId = AuthorizedUserId(subscriber.id.value)
+        )
+        val actual = sut.subscribe(input).error
 
         Assertions.assertEquals(UsecaseErrorCode.ChannelNotFound, actual)
     }
@@ -127,7 +136,12 @@ class SubscribeChannelTest {
             subscriberRepository = subscriberRepository,
         )
 
-        val actual = sut.subscribe(channel.id.value, subscriber.id.value).error
+
+        val input = SubscribeChannel.Input(
+            channelId = channel.id.value,
+            subscriberId = AuthorizedUserId(subscriber.id.value)
+        )
+        val actual = sut.subscribe(input).error
 
         Assertions.assertEquals(UsecaseErrorCode.SubscriberNotFound, actual)
     }
@@ -159,7 +173,12 @@ class SubscribeChannelTest {
             subscriberRepository = subscriberRepository,
         )
 
-        val actual = sut.subscribe(channel.id.value, subscriber.id.value).error
+
+        val input = SubscribeChannel.Input(
+            channelId = channel.id.value,
+            subscriberId = AuthorizedUserId(subscriber.id.value)
+        )
+        val actual = sut.subscribe(input).error
 
         Assertions.assertEquals(UsecaseErrorCode.AlreadyChanelSubscribed, actual)
     }

@@ -1,4 +1,4 @@
-package jp.glory.channel.domain
+package jp.glory.channel.domain.model
 
 import jp.glory.base.domain.DomainErrorCode
 import org.junit.jupiter.api.Assertions

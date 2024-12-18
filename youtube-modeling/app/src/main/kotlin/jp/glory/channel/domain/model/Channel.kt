@@ -1,9 +1,10 @@
-package jp.glory.channel.domain
+package jp.glory.channel.domain.model
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import jp.glory.base.domain.DomainErrorCode
+import jp.glory.channel.domain.event.SubscribedChannel
 
 class Channel(
     val id: ChanelId,
@@ -24,14 +25,6 @@ class Channel(
         )
     }
 }
-
-data class SubscribedChannel(
-    val chanelId: ChanelId,
-    val subscriberId: SubscriberId
-)
-
-@JvmInline
-value class ChanelId(val value:String)
 
 @JvmInline
 value class ChanelTitle(val value:String)
