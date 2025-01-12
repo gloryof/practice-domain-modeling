@@ -9,8 +9,8 @@ import jp.glory.base.domain.DomainErrorCode
 import jp.glory.base.usecase.AuthorizedUserId
 import jp.glory.base.usecase.UsecaseErrorCode
 import jp.glory.channel.domain.event.ChannelEventListener
-import jp.glory.channel.domain.model.ChanelId
 import jp.glory.channel.domain.model.Channel
+import jp.glory.channel.domain.model.ChannelId
 import jp.glory.channel.domain.model.Subscriber
 import jp.glory.channel.domain.model.SubscriberId
 import jp.glory.channel.domain.repository.ChannelRepository
@@ -25,7 +25,7 @@ class SubscribeChannel(
         input: Input
     ): Result<Unit, UsecaseErrorCode> =
         zip (
-            { channelRepository.findById(ChanelId(input.channelId)) },
+            { channelRepository.findById(ChannelId(input.channelId)) },
             { subscriberRepository.findById(SubscriberId(input.subscriberId.value)) },
             { channel, subscriber -> Target(channel, subscriber) }
         )
@@ -37,7 +37,7 @@ class SubscribeChannel(
         subscriber: Subscriber
     ): Result<Unit, DomainErrorCode> =
         channel.subscribe(subscriber)
-            .map { channelEventListener.handleSubscribed(it) }
+            .map { channelEventListener.handleSubscribedChannel(it) }
 
     class Input(
         val channelId: String,

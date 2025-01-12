@@ -7,19 +7,19 @@ import jp.glory.base.domain.DomainErrorCode
 import jp.glory.channel.domain.event.SubscribedChannel
 
 class Channel(
-    val id: ChanelId,
-    val title: ChanelTitle,
-    val subscriberCount: SubscriberCount,
-    val movieCount: MovieCount
+    val id: ChannelId,
+    private val title: ChannelTitle,
+    private val subscriberCount: SubscriberCount,
+    private val movieCount: MovieCount
 ) {
     fun subscribe(subscriber: Subscriber): Result<SubscribedChannel, DomainErrorCode> {
         if (subscriber.isSubscribed(id)) {
-            return Err(DomainErrorCode.AlreadyChanelSubscribed)
+            return Err(DomainErrorCode.AlreadyChannelSubscribed)
         }
 
         return Ok(
             SubscribedChannel(
-                chanelId = id,
+                channelId = id,
                 subscriberId = subscriber.id
             )
         )
@@ -27,7 +27,7 @@ class Channel(
 }
 
 @JvmInline
-value class ChanelTitle(val value:String)
+value class ChannelTitle(val value:String)
 
 @JvmInline
 value class SubscriberCount(val value: UInt)

@@ -2,10 +2,10 @@ package jp.glory.channel.domain.model
 
 class Subscriber(
     val id: SubscriberId,
-    private val subscribedChannelIds: List<ChanelId>
+    private val subscribedChannelIds: List<ChannelId>
 ) {
-    fun isSubscribed(chanelId: ChanelId): Boolean =
-        subscribedChannelIds.contains(chanelId)
+    fun isSubscribed(channelId: ChannelId): Boolean =
+        subscribedChannelIds.contains(channelId)
 }
 
 @JvmInline

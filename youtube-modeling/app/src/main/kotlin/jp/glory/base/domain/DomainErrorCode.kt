@@ -1,8 +1,11 @@
 package jp.glory.base.domain
 
 enum class DomainErrorCode {
-    AlreadyChanelSubscribed,
+    AlreadyChannelSubscribed,
     ChannelNotFound,
     SubscriberNotFound,
     NotHaveUploadMovieAuthority,
+    NotHaveInviteAuthority,
+    NotInvited,
+    Unknown
 }

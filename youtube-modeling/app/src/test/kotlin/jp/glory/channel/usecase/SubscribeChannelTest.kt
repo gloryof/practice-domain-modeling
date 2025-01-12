@@ -10,9 +10,9 @@ import jp.glory.base.usecase.AuthorizedUserId
 import jp.glory.base.usecase.UsecaseErrorCode
 import jp.glory.channel.domain.event.ChannelEventListener
 import jp.glory.channel.domain.event.SubscribedChannel
-import jp.glory.channel.domain.model.ChanelId
-import jp.glory.channel.domain.model.ChanelTitle
 import jp.glory.channel.domain.model.Channel
+import jp.glory.channel.domain.model.ChannelId
+import jp.glory.channel.domain.model.ChannelTitle
 import jp.glory.channel.domain.model.MovieCount
 import jp.glory.channel.domain.model.Subscriber
 import jp.glory.channel.domain.model.SubscriberCount
@@ -26,8 +26,8 @@ class SubscribeChannelTest {
     @Test
     fun success() {
         val channel = Channel(
-            id = ChanelId("test-channel-id"),
-            title = ChanelTitle("test-channel-title"),
+            id = ChannelId("test-channel-id"),
+            title = ChannelTitle("test-channel-title"),
             subscriberCount = SubscriberCount(1u),
             movieCount = MovieCount(2u)
         )
@@ -36,7 +36,7 @@ class SubscribeChannelTest {
             subscribedChannelIds = emptyList()
         )
         val event = SubscribedChannel(
-            chanelId = channel.id,
+            channelId = channel.id,
             subscriberId = subscriber.id
         )
         val channelRepository: ChannelRepository = mockk()
@@ -51,7 +51,7 @@ class SubscribeChannelTest {
 
         val channelEventListener: ChannelEventListener = mockk()
         every {
-            channelEventListener.handleSubscribed(event)
+            channelEventListener.handleSubscribedChannel(event)
         } returns Ok(Unit)
 
         val sut = createSut(
@@ -67,7 +67,7 @@ class SubscribeChannelTest {
         sut.subscribe(input)
 
         verify {
-            channelEventListener.handleSubscribed(event)
+            channelEventListener.handleSubscribedChannel(event)
         }
     }
 
@@ -75,8 +75,8 @@ class SubscribeChannelTest {
     @Test
     fun `Fail when channel is not found`() {
         val channel = Channel(
-            id = ChanelId("test-channel-id"),
-            title = ChanelTitle("test-channel-title"),
+            id = ChannelId("test-channel-id"),
+            title = ChannelTitle("test-channel-title"),
             subscriberCount = SubscriberCount(1u),
             movieCount = MovieCount(2u)
         )
@@ -112,8 +112,8 @@ class SubscribeChannelTest {
     @Test
     fun `Fail when subscriber is not found`() {
         val channel = Channel(
-            id = ChanelId("test-channel-id"),
-            title = ChanelTitle("test-channel-title"),
+            id = ChannelId("test-channel-id"),
+            title = ChannelTitle("test-channel-title"),
             subscriberCount = SubscriberCount(1u),
             movieCount = MovieCount(2u)
         )
@@ -149,8 +149,8 @@ class SubscribeChannelTest {
     @Test
     fun `Fail when already subscribed`() {
         val channel = Channel(
-            id = ChanelId("test-channel-id"),
-            title = ChanelTitle("test-channel-title"),
+            id = ChannelId("test-channel-id"),
+            title = ChannelTitle("test-channel-title"),
             subscriberCount = SubscriberCount(1u),
             movieCount = MovieCount(2u)
         )
@@ -180,7 +180,7 @@ class SubscribeChannelTest {
         )
         val actual = sut.subscribe(input).error
 
-        Assertions.assertEquals(UsecaseErrorCode.AlreadyChanelSubscribed, actual)
+        Assertions.assertEquals(UsecaseErrorCode.AlreadyChannelSubscribed, actual)
     }
 
     private fun createSut(

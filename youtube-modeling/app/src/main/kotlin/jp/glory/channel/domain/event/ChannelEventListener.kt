@@ -5,6 +5,9 @@ import jp.glory.base.domain.DomainErrorCode
 import jp.glory.channel.domain.model.MovieId
 
 interface ChannelEventListener {
-    fun handleSubscribed(event: SubscribedChannel): Result<Unit, DomainErrorCode>
-    fun handleUploaded(event: UploadedMovie): Result<MovieId, DomainErrorCode>
+    fun handleSubscribedChannel(event: SubscribedChannel): Result<Unit, DomainErrorCode>
+    fun handleUploadedMovie(event: UploadedMovie): Result<MovieId, DomainErrorCode>
+    fun handleCreatedChannel(event: CreatedChannel): Result<Unit, DomainErrorCode>
+    fun handleInvitedChannel(event: InvitedChannel): Result<Unit, DomainErrorCode>
+    fun handleAcceptedInvite(event: AcceptedInvite): Result<Unit, DomainErrorCode>
 }

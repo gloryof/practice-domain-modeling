@@ -7,8 +7,8 @@ import com.github.michaelbull.result.mapError
 import jp.glory.base.usecase.AuthorizedUserId
 import jp.glory.base.usecase.UsecaseErrorCode
 import jp.glory.channel.domain.event.ChannelEventListener
-import jp.glory.channel.domain.model.ChanelId
-import jp.glory.channel.domain.model.ChanelOwnerId
+import jp.glory.channel.domain.model.ChannelId
+import jp.glory.channel.domain.model.ChannelOwnerId
 import jp.glory.channel.domain.model.MovieIdGenerator
 import jp.glory.channel.domain.model.MovieTitle
 import jp.glory.channel.domain.model.ReleaseAt
@@ -22,23 +22,23 @@ class UploadMovie(
     private val idGenerator: MovieIdGenerator
 ) {
     fun upload(input: Input): Result<Output, UsecaseErrorCode> =
-        repository.findById(ChanelId(input.chanelId))
+        repository.findById(ChannelId(input.channelId))
             .flatMap {
                 it.upload(
-                    uploadUserId = ChanelOwnerId(input.authorizedUserId.value),
+                    uploadUserId = ChannelOwnerId(input.authorizedUserId.value),
                     movieTitle = MovieTitle(input.title),
                     releaseAt = ReleaseAt(input.releaseAt),
                     binary = input.binary,
                     idGenerator = idGenerator
                 )
             }
-            .flatMap { listener.handleUploaded(it) }
+            .flatMap { listener.handleUploadedMovie(it) }
             .map { Output(it.value) }
             .mapError { UsecaseErrorCode.fromDomain(it) }
 
     class Input(
         val authorizedUserId: AuthorizedUserId,
-        val chanelId: String,
+        val channelId: String,
         val title: String,
         val releaseAt: OffsetDateTime,
         val binary: InputStream,

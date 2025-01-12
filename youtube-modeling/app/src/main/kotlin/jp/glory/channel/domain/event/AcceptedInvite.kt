@@ -1,9 +1,9 @@
 package jp.glory.channel.domain.event
 
 import jp.glory.channel.domain.model.ChannelId
-import jp.glory.channel.domain.model.SubscriberId
+import jp.glory.channel.domain.model.InvitedUserId
 
-data class SubscribedChannel(
+data class AcceptedInvite(
     val channelId: ChannelId,
-    val subscriberId: SubscriberId
+    val invitedUserId: InvitedUserId
 )

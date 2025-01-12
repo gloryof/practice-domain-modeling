@@ -7,8 +7,8 @@ import io.mockk.verify
 import jp.glory.base.usecase.AuthorizedUserId
 import jp.glory.channel.domain.event.ChannelEventListener
 import jp.glory.channel.domain.event.UploadedMovie
-import jp.glory.channel.domain.model.ChanelId
-import jp.glory.channel.domain.model.ChanelOwnerId
+import jp.glory.channel.domain.model.ChannelId
+import jp.glory.channel.domain.model.ChannelOwnerId
 import jp.glory.channel.domain.model.ManageChannel
 import jp.glory.channel.domain.model.MovieId
 import jp.glory.channel.domain.model.MovieIdGenerator
@@ -25,7 +25,7 @@ class UploadMovieTest {
     fun success() {
         val input = UploadMovie.Input(
             authorizedUserId = AuthorizedUserId("test-user-id"),
-            chanelId = "test-channel-id",
+            channelId = "test-channel-id",
             title = "test-title",
             releaseAt = OffsetDateTime.now(),
             binary = ByteArrayInputStream(byteArrayOf(1, 1, 1))
@@ -33,13 +33,14 @@ class UploadMovieTest {
         val expected = MovieId("test-movie-id")
 
         val channel = ManageChannel(
-            id = ChanelId(input.chanelId),
-            owners = listOf(ChanelOwnerId("test-user-id"))
+            id = ChannelId(input.channelId),
+            owners = mutableListOf(ChannelOwnerId("test-user-id")),
+            inviting = mutableMapOf()
         )
 
         val event = UploadedMovie(
             movieId = expected,
-            chanelId = ChanelId(input.chanelId),
+            channelId = ChannelId(input.channelId),
             releaseAt = ReleaseAt(input.releaseAt),
             title = MovieTitle(input.title),
             binary = input.binary
@@ -47,12 +48,12 @@ class UploadMovieTest {
 
         val repository: ManageChannelRepository = mockk()
         every {
-            repository.findById(ChanelId(input.chanelId))
+            repository.findById(ChannelId(input.channelId))
         } returns Ok(channel)
 
         val listener: ChannelEventListener = mockk()
         every {
-            listener.handleUploaded(event)
+            listener.handleUploadedMovie(event)
         } returns Ok(expected)
 
         val idGenerator: MovieIdGenerator = mockk()
@@ -70,7 +71,7 @@ class UploadMovieTest {
 
         Assertions.assertEquals(expected.value, actual.movieId)
         verify {
-            listener.handleUploaded(event)
+            listener.handleUploadedMovie(event)
         }
     }
 

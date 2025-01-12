@@ -10,9 +10,9 @@ class SubscriberTest {
     @Nested
     inner class TestIsSubscribed {
         @Test
-        fun `Return true when chanel is subscribed`() {
-            val targetId = ChanelId("subscribed-id-1")
-            val subscribedChannelIds: List<ChanelId> = listOf(
+        fun `Return true when channel is subscribed`() {
+            val targetId = ChannelId("subscribed-id-1")
+            val subscribedChannelIds: List<ChannelId> = listOf(
                 targetId
             )
             val sut = createSut(
@@ -23,9 +23,9 @@ class SubscriberTest {
         }
 
         @Test
-        fun `Return false when chanel is subscribed`() {
-            val targetId = ChanelId("subscribed-id-1")
-            val subscribedChannelIds: List<ChanelId> = emptyList()
+        fun `Return false when channel is subscribed`() {
+            val targetId = ChannelId("subscribed-id-1")
+            val subscribedChannelIds: List<ChannelId> = emptyList()
             val sut = createSut(
                 subscribedChannelIds = subscribedChannelIds
             )
@@ -36,9 +36,9 @@ class SubscriberTest {
 
     private fun createSut(
         id: SubscriberId = SubscriberId("test-subscriber-id"),
-        subscribedChannelIds: List<ChanelId> = listOf(
-            ChanelId("subscribed-id-1"),
-            ChanelId("subscribed-id-2"),
+        subscribedChannelIds: List<ChannelId> = listOf(
+            ChannelId("subscribed-id-1"),
+            ChannelId("subscribed-id-2"),
         )
     ): Subscriber =
         Subscriber(

@@ -13,40 +13,41 @@ class ChannelTest {
             val subscriber = Subscriber(
                 id = SubscriberId("test-subscriber-id"),
                 subscribedChannelIds = listOf(
-                    ChanelId("subscribed-id-1"),
-                    ChanelId("subscribed-id-2"),
+                    ChannelId("subscribed-id-1"),
+                    ChannelId("subscribed-id-2"),
                 )
             )
 
             val sut = createSut(
-                id = ChanelId("test-channel-id")
+                id = ChannelId("test-channel-id")
             )
 
             val actual = sut.subscribe(subscriber).value
 
-            Assertions.assertEquals(actual.chanelId.value, actual.chanelId.value)
+            Assertions.assertEquals(actual.channelId.value, actual.channelId.value)
             Assertions.assertEquals(actual.subscriberId.value, actual.subscriberId.value)
         }
 
         @Test
         fun `Throw UsecaseException when subscriber dose not subscribe target`() {
+            val id = ChannelId("test-channel-id")
             val sut = createSut(
-                id = ChanelId("test-channel-id")
+                id = id
             )
 
             val subscriber = Subscriber(
                 id = SubscriberId("test-subscriber-id"),
-                subscribedChannelIds = listOf(sut.id)
+                subscribedChannelIds = listOf(id)
             )
             val actual = sut.subscribe(subscriber).error
 
-            Assertions.assertEquals(DomainErrorCode.AlreadyChanelSubscribed, actual)
+            Assertions.assertEquals(DomainErrorCode.AlreadyChannelSubscribed, actual)
         }
     }
 
     private fun createSut(
-        id: ChanelId = ChanelId("test-channel-id"),
-        title: ChanelTitle = ChanelTitle("test-channel-title"),
+        id: ChannelId = ChannelId("test-channel-id"),
+        title: ChannelTitle = ChannelTitle("test-channel-title"),
         subscriberCount: SubscriberCount = SubscriberCount(10u),
         movieCount: MovieCount = MovieCount(11u)
     ): Channel = Channel(
